@@ -133,3 +133,57 @@ select {
 }
 select option { background:#fff !important; color:#000 !important; }
 .admin-body select option { background:#1e1e1e !important; color:#fff !important; }
+
+/* ============================
+   🌙 MODO ESCURO – Preto / Roxo / Vermelho
+   (usa body[data-theme="dark"])
+   ============================ */
+body[data-theme="dark"] {
+  --bg: #0a0a0a;
+  --card: #141414;
+  --dark: #ffffff;
+  --muted: #bbbbbb;
+  color: var(--dark);
+  background: var(--bg);
+}
+
+/* Header escuro com gradiente roxo -> vermelho */
+body[data-theme="dark"] header {
+  background: linear-gradient(135deg, #4b0082, #8b0000);
+  color: white;
+}
+
+/* Sidebar */
+body[data-theme="dark"] .sidebar {
+  background: #0f0f0f;
+  border-right: 2px solid #4b0082;
+}
+body[data-theme="dark"] .sidebar ul li { color: #b37bff; }
+body[data-theme="dark"] .sidebar ul li:hover { color: #ff4b4b; }
+
+/* Produtos / cards */
+body[data-theme="dark"] .produto {
+  background: #141414;
+  border: 1px solid #4b0082;
+  color: white;
+  box-shadow: 0px 4px 15px rgba(128, 0, 128, 0.3);
+}
+body[data-theme="dark"] .produto:hover {
+  transform: translateY(-4px);
+  box-shadow: 0px 0px 15px #ff0000aa;
+}
+
+/* Botões */
+body[data-theme="dark"] button,
+body[data-theme="dark"] .btn {
+  background: #8b0000;
+  color: white;
+}
+body[data-theme="dark"] button:hover,
+body[data-theme="dark"] .btn:hover { background: #ff0000; }
+
+body[data-theme="dark"] footer {
+  background: #000;
+  color: white;
+  border-top: 2px solid #4b0082;
+}
