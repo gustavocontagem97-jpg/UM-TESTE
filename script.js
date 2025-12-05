@@ -11,8 +11,9 @@
     localStorage.setItem('admins', JSON.stringify(defaultAdmins));
   }
 
-  // modo celular persistente
+  // aplica modos salvos
   if (localStorage.getItem('modoCelular') === 'true') document.body.classList.add('modo-celular');
+  if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark-mode');
 
   // carregar produtos na index
   window.addEventListener('load', () => {
@@ -20,6 +21,9 @@
     if (document.getElementById('lista-produtos')) carregarProdutos(); // para admin
     iniciarDestaques();
     initCarousel();
+    carregarAdmins();
+    // aplica estilos nos selects logo ao carregar
+    applySelectInlineStyles();
   });
 })();
 
@@ -62,6 +66,7 @@ function initCarousel(){
   const imgs = Array.from(container.querySelectorAll('img'));
   if (!imgs.length) return;
 
+  // garante que cada imagem tenha width do container no momento do show
   let index = 0;
   function show(i){
     const width = container.clientWidth || container.offsetWidth;
@@ -292,37 +297,34 @@ function login(){
   const user = document.getElementById('username').value.trim();
   const pass = document.getElementById('password').value;
   const err = document.getElementById('login-error');
-  if (!user || !pass) { err.textContent = 'Preencha usuário e senha.'; return; }
+  if (!user || !pass) { if (err) err.textContent = 'Preencha usuário e senha.'; return; }
 
   const admins = getAdmins();
   const match = admins.find(a => a.user === user && a.pass === pass);
-  if (!match) { err.textContent = 'Usuário ou senha incorretos!'; return; }
+  if (!match) { if (err) err.textContent = 'Usuário ou senha incorretos!'; return; }
 
   // sucesso
-  err.textContent = '';
+  if (err) err.textContent = '';
   document.getElementById('login-container')?.classList.add('hidden');
   document.getElementById('admin-panel')?.classList.remove('hidden');
   carregarProdutos();
   carregarAdmins();
 }
 
-// atualizar login atual (não altera todos, apenas cria/atualiza o admin selecionado? Aqui atualiza o primeiro admin se quiser)
+// atualizar login atual (atualiza primeiro admin por conveniência)
 function atualizarLogin(){
   const novoUser = document.getElementById('novo-usuario').value.trim();
   const novaSenha = document.getElementById('nova-senha').value;
   const msg = document.getElementById('atualizar-msg');
   if (novoUser.length < 3 || novaSenha.length < 3) {
-    msg.textContent = 'Usuário e senha precisam ter pelo menos 3 caracteres.';
-    msg.classList.remove('msg-success'); msg.classList.add('msg-error');
+    if (msg) { msg.textContent = 'Usuário e senha precisam ter pelo menos 3 caracteres.'; msg.classList.remove('msg-success'); msg.classList.add('msg-error'); }
     return;
   }
 
-  // Atualiza o primeiro admin (padrão) para facilitar uso
   const admins = getAdmins();
   admins[0] = { user: novoUser, pass: novaSenha };
   setAdmins(admins);
-  msg.textContent = 'Login atualizado com sucesso.';
-  msg.classList.remove('msg-error'); msg.classList.add('msg-success');
+  if (msg) { msg.textContent = 'Login atualizado com sucesso.'; msg.classList.remove('msg-error'); msg.classList.add('msg-success'); }
   document.getElementById('novo-usuario').value = '';
   document.getElementById('nova-senha').value = '';
   carregarAdmins();
@@ -332,37 +334,69 @@ function atualizarLogin(){
 function logout(){ location.reload(); }
 
 // ---------------------------
-// MODO CELULAR
+// MODO: alterna Dark / Celular / Normal
 // ---------------------------
+
 document.getElementById('toggle-mode')?.addEventListener('click', () => {
-  document.body.classList.toggle('modo-celular');
-  const ativo = document.body.classList.contains('modo-celular');
-  localStorage.setItem('modoCelular', ativo ? 'true' : 'false');
+  const body = document.body;
+
+  // Se estiver em nenhum modo: ativa dark-mode
+  if (!body.classList.contains('dark-mode') && !body.classList.contains('modo-celular')) {
+    body.classList.add('dark-mode');
+    localStorage.setItem('darkMode', 'true');
+  }
+  // Se estiver só em dark-mode: troca para modo-celular (remove dark)
+  else if (body.classList.contains('dark-mode') && !body.classList.contains('modo-celular')) {
+    body.classList.remove('dark-mode');
+    localStorage.setItem('darkMode', 'false');
+    body.classList.add('modo-celular');
+    localStorage.setItem('modoCelular', 'true');
+  }
+  // Se estiver em modo-celular: volta ao normal (remove modo-celular)
+  else if (body.classList.contains('modo-celular')) {
+    body.classList.remove('modo-celular');
+    localStorage.setItem('modoCelular', 'false');
+  }
+
+  atualizarBotaoModo();
+});
+
+function atualizarBotaoModo(){
   const btn = document.getElementById('toggle-mode');
-  if (btn) btn.textContent = ativo ? 'Modo Computador' : 'Modo Celular';
-});
+  if (!btn) return;
 
-// ---------------------------
-// inicializa lista de admins e produtos onde necessário
-// ---------------------------
-window.addEventListener('load', () => {
-  carregarAdmins();
-  carregarProdutos();
-});
+  if (document.body.classList.contains('modo-celular')) {
+    btn.textContent = "Modo Computador";
+  } else if (document.body.classList.contains('dark-mode')) {
+    btn.textContent = "Modo Claro";
+  } else {
+    btn.textContent = "Modo Escuro";
+  }
+}
 
+// inicial define texto do botão ao carregar
+window.addEventListener('load', atualizarBotaoModo);
 
 // ---------------------------
 // FIX: força estilos legíveis em <select> e <option>
 // aplica inline style e observa mutações
 // ---------------------------
-(function fixSelectStyles(){
+function applySelectInlineStyles(){
   try {
     document.querySelectorAll('select').forEach(s => {
-      s.style.backgroundColor = document.body.classList.contains('dark') ? '#1e1e1e' : '#ffffff';
-      s.style.color = document.body.classList.contains('dark') ? '#fff' : '#000';
-      s.style.border = '1px solid rgba(0,0,0,0.12)';
+      // não sobrescrever classe admin-body specifics if present, but ensure legibility
+      const isAdmin = s.closest('.admin-body') || s.closest('#admin-panel') || document.body.classList.contains('admin-body');
+      if (isAdmin) {
+        s.style.backgroundColor = '#1e1e1e';
+        s.style.color = '#fff';
+        s.style.border = '1px solid rgba(255,255,255,0.08)';
+      } else {
+        s.style.backgroundColor = document.body.classList.contains('dark-mode') ? '#1e1e1e' : '#ffffff';
+        s.style.color = document.body.classList.contains('dark-mode') ? '#fff' : '#000';
+        s.style.border = '1px solid rgba(0,0,0,0.12)';
+      }
       for (let i=0;i<s.options.length;i++){
-        try { s.options[i].style.color = document.body.classList.contains('dark') ? '#fff' : '#000'; } catch(e){}
+        try { s.options[i].style.color = document.body.classList.contains('dark-mode') ? '#fff' : '#000'; } catch(e){}
       }
       s.dataset.fixApplied = '1';
     });
@@ -370,17 +404,25 @@ window.addEventListener('load', () => {
     const obs = new MutationObserver(() => {
       document.querySelectorAll('select').forEach(s => {
         if (!s.dataset.fixApplied) {
-          s.dataset.fixApplied = '1';
-          s.style.backgroundColor = document.body.classList.contains('dark') ? '#1e1e1e' : '#ffffff';
-          s.style.color = document.body.classList.contains('dark') ? '#fff' : '#000';
-          for (let i=0;i<s.options.length;i++){
-            try { s.options[i].style.color = document.body.classList.contains('dark') ? '#fff' : '#000'; } catch(e){}
+          const isAdmin = s.closest('.admin-body') || s.closest('#admin-panel') || document.body.classList.contains('admin-body');
+          if (isAdmin) {
+            s.style.backgroundColor = '#1e1e1e';
+            s.style.color = '#fff';
+            s.style.border = '1px solid rgba(255,255,255,0.08)';
+          } else {
+            s.style.backgroundColor = document.body.classList.contains('dark-mode') ? '#1e1e1e' : '#ffffff';
+            s.style.color = document.body.classList.contains('dark-mode') ? '#fff' : '#000';
+            s.style.border = '1px solid rgba(0,0,0,0.12)';
           }
+          for (let i=0;i<s.options.length;i++){
+            try { s.options[i].style.color = document.body.classList.contains('dark-mode') ? '#fff' : '#000'; } catch(e){}
+          }
+          s.dataset.fixApplied = '1';
         }
       });
     });
     obs.observe(document.documentElement || document.body, { childList: true, subtree: true });
   } catch(e){
-    console.warn('fixSelectStyles failed', e);
+    console.warn('applySelectInlineStyles failed', e);
   }
-})();
+}
