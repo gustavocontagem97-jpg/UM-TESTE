@@ -3,64 +3,52 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin - Garimpos do Gu</title>
+  <title>Garimpos do Gu</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-
-<body class="admin-body">
+<body>
 
   <header>
-    <h1 id="logo">Garimpos do Gu - Painel ADM</h1>
+    <h1 id="logo">Garimpos do Gu</h1>
+    <div class="gear" onclick="window.location.href='admin.html'">⚙</div>
+    <button id="toggle-mode">Modo Celular</button>
   </header>
 
-  <!-- LOGIN -->
-  <div id="login-container">
-    <h2>Área Administrativa</h2>
-    <input type="text" id="username" placeholder="Usuário" />
-    <input type="password" id="password" placeholder="Senha" />
-    <button onclick="login()">Entrar</button>
-    <p id="login-error"></p>
+  <div class="destaques">
+    <span id="destaque-texto">Itens em Promoção</span>
   </div>
 
-  <!-- PAINEL ADMIN -->
-  <div id="admin-panel" class="hidden">
-    <h2>Gerenciar Produtos</h2>
+  <section class="carousel">
+    <div class="carousel-container">
+      <img src="https://via.placeholder.com/1200x300?text=Promoção+1" />
+      <img src="https://via.placeholder.com/1200x300?text=Promoção+2" />
+      <img src="https://via.placeholder.com/1200x300?text=Promoção+3" />
+    </div>
+  </section>
 
-    <form id="produto-form">
-      <input type="text" id="produto-nome" placeholder="Nome do produto" required />
-      <input type="url" id="produto-link" placeholder="Link do produto" required />
-      <input type="url" id="produto-imagem" placeholder="Imagem do produto (URL)" required />
-      <input type="text" id="produto-preco" placeholder="Preço (Ex: R$ 99,90)" required />
+  <div class="container">
+    <aside class="sidebar">
+      <h3>Categorias</h3>
+      <ul>
+        <li onclick="filtrarCategoria('Todos')">Todos</li>
+        <li onclick="filtrarCategoria('Eletrodomésticos')">Eletrodomésticos</li>
+        <li onclick="filtrarCategoria('Utensílios de cozinha')">Utensílios de cozinha</li>
+        <li onclick="filtrarCategoria('Peças de carro')">Peças de carro</li>
+        <li onclick="filtrarCategoria('Celulares & Acessórios')">Celulares & Acessórios</li>
+        <li onclick="filtrarCategoria('Roupas & Itens de Moda')">Roupas & Itens de Moda</li>
+        <li onclick="filtrarCategoria('Videogames & Jogos')">Videogames & Jogos</li>
+      </ul>
+    </aside>
 
-      <select id="produto-categoria" required>
-        <option value="Eletrodomésticos">Eletrodomésticos</option>
-        <option value="Utensílios de cozinha">Utensílios de cozinha</option>
-        <option value="Peças de carro">Peças de carro</option>
-        <option value="Celulares & Acessórios">Celulares & Acessórios</option>
-        <option value="Roupas & Itens de Moda">Roupas & Itens de Moda</option>
-        <option value="Videogames & Jogos">Videogames & Jogos</option>
-      </select>
-
-      <button type="submit">Adicionar Produto</button>
-    </form>
-
-    <h3>Lista de Produtos</h3>
-    <ul id="lista-produtos"></ul>
-
-    <hr>
-
-    <!-- TROCAR USUÁRIO E SENHA -->
-    <h2>Configurações de Acesso</h2>
-    <p>Trocar usuário e senha:</p>
-
-    <input type="text" id="novo-usuario" placeholder="Novo usuário" />
-    <input type="password" id="nova-senha" placeholder="Nova senha" />
-    <button onclick="atualizarLogin()">Atualizar Login</button>
-
-    <p id="atualizar-msg"></p>
-
-    <button onclick="logout()" class="logout-btn">Sair</button>
+    <main class="products">
+      <h2>Produtos em Destaque</h2>
+      <div id="produtos" class="produtos-grid"></div>
+    </main>
   </div>
+
+  <footer>
+    <p>&copy; 2025 Garimpos do Gu - Todos os direitos reservados.</p>
+  </footer>
 
   <script src="script.js"></script>
 </body>
