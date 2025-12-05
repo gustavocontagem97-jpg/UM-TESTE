@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="light">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -23,7 +23,7 @@
     <input type="text" id="username" placeholder="Usuário" autocomplete="username" />
     <input type="password" id="password" placeholder="Senha" autocomplete="current-password" />
     <div class="row">
-      <button id="btn-login" onclick="handleLogin()">Entrar</button>
+      <button id="btn-login">Entrar</button>
       <button id="btn-visit" class="small-ghost" onclick="window.location.href='index.html'">Ir ao site</button>
     </div>
     <p id="login-error" class="msg-error"></p>
@@ -77,18 +77,38 @@
         <input id="novo-usuario" placeholder="Novo usuário" />
         <input id="nova-senha" type="password" placeholder="Nova senha" />
         <div class="row">
-          <button onclick="atualizarLogin()">Atualizar Login</button>
+          <button id="atualizar-login">Atualizar Login</button>
           <button onclick="logout()" class="small-ghost">Sair</button>
         </div>
         <p id="atualizar-msg" class="msg-success"></p>
       </div>
+    </section>
+
+    <!-- Promoções -->
+    <section class="card" style="max-width:1200px;margin:20px auto;">
+      <h2>Gerenciar Promoções (Carrossel)</h2>
+      <form id="promocao-form">
+        <input id="promo-titulo" placeholder="Título da promoção (ex: Super oferta)" required />
+        <input id="promo-imagem" type="url" placeholder="Imagem (URL) - 1200x350 recomendado" required />
+        <input id="promo-link" type="url" placeholder="Link (https://...)" />
+        <div class="row">
+          <button type="submit">Adicionar Promoção</button>
+          <button type="button" class="small-ghost" id="limpar-promo">Limpar</button>
+        </div>
+      </form>
+
+      <h3>Promoções Cadastradas</h3>
+      <ul id="lista-promocoes" class="admin-list"></ul>
     </section>
   </main>
 
   <script src="script.js"></script>
   <script>
     document.getElementById('back-home')?.addEventListener('click', () => location.href = 'index.html');
-    function handleLogin(){ /* wrapper to avoid name collisions */ login(); }
+    document.getElementById('btn-login')?.addEventListener('click', () => login());
+    document.getElementById('atualizar-login')?.addEventListener('click', atualizarLogin);
+    document.getElementById('promocao-form')?.addEventListener('submit', (e)=>{ e.preventDefault(); adicionarPromocao(); });
+    document.getElementById('limpar-promo')?.addEventListener('click', ()=>{ document.getElementById('promo-titulo').value=''; document.getElementById('promo-imagem').value=''; document.getElementById('promo-link').value=''; });
   </script>
 </body>
 </html>
