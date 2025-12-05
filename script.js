@@ -1,33 +1,23 @@
 /* ---------- UTILIDADES ---------- */
 const LS_PREFIX = 'garimpos_v1_';
-function lsGet(key, fallback){
-  try { const v = localStorage.getItem(LS_PREFIX + key); return v ? JSON.parse(v) : fallback; }
-  catch(e){ return fallback; }
-}
-function lsSet(key, value){
-  localStorage.setItem(LS_PREFIX + key, JSON.stringify(value));
-}
+function lsGet(key, fallback){ try { const v = localStorage.getItem(LS_PREFIX + key); return v ? JSON.parse(v) : fallback; } catch(e){ return fallback; } }
+function lsSet(key, value){ localStorage.setItem(LS_PREFIX + key, JSON.stringify(value)); }
 
-/* ---------- TEMA (claro / escuro) - CORRIGIDO ---------- */
+/* ---------- TEMA (claro / escuro) - usa atributo no <body> ---------- */
 (function themeInit(){
-  // Seleciona o(s) botão(ões) de tema — pode haver #toggle-theme ou #themeToggle
+  // suporta botões com ids diferentes nas páginas
   const btns = Array.from(document.querySelectorAll('#toggle-theme, #themeToggle')).filter(Boolean);
-
-  // Ler tema salvo (fallback 'light')
+  // ler tema salvo (fallback 'light')
   const saved = lsGet('theme', 'light');
-
-  // Aplicar no body (o CSS usa body[data-theme="..."])
   document.body.setAttribute('data-theme', saved);
-
-  // Atualizar texto dos botões e adicionar listener
-  btns.forEach(btn => {
+  btns.forEach(btn=>{
     btn.textContent = saved === 'dark' ? '☀️' : '🌙';
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', ()=>{
       const current = document.body.getAttribute('data-theme') || 'light';
       const next = current === 'dark' ? 'light' : 'dark';
       document.body.setAttribute('data-theme', next);
       lsSet('theme', next);
-      btns.forEach(b => b.textContent = next === 'dark' ? '☀️' : '🌙');
+      btns.forEach(b=>b.textContent = next === 'dark' ? '☀️' : '🌙');
     });
   });
 })();
@@ -94,7 +84,7 @@ function goToSlide(i){ carouselIndex = i; updateCarousel(); }
 function nextSlide(){ carouselIndex++; updateCarousel(); }
 function resetAutoPlay(){ clearInterval(carouselTimer); carouselTimer = setInterval(nextSlide, 4000); }
 
-/* ---------- PROMOÇÕES - ADMIN (CRUD) ---------- */
+/* ---------- PROMOÇÕES - ADMIN ---------- */
 function carregarPromocoesAdmin(){
   const lista = document.getElementById('lista-promocoes');
   if(!lista) return;
