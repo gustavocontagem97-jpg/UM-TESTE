@@ -3,23 +3,31 @@ const LS_PREFIX = 'garimpos_v1_';
 function lsGet(key, fallback){ try { const v = localStorage.getItem(LS_PREFIX + key); return v ? JSON.parse(v) : fallback; } catch(e){ return fallback; } }
 function lsSet(key, value){ localStorage.setItem(LS_PREFIX + key, JSON.stringify(value)); }
 
-/* ---------- TEMA (claro / escuro) ---------- */
+/* ---------- TEMA (claro / escuro) - CORRIGIDO ---------- */
 (function themeInit(){
-  const btns = document.querySelectorAll('#toggle-theme, #themeToggle');
+  // seleciona botões que você usa nas duas páginas (IDs diferentes)
+  const btns = Array.from(document.querySelectorAll('#toggle-theme, #themeToggle')).filter(Boolean);
+
+  // ler tema salvo (fallback 'light')
   const saved = lsGet('theme', 'light');
-  document.documentElement.setAttribute('data-theme', saved);
-  btns.forEach(btn=>{
-    if(!btn) return;
+
+  // aplicar no body (o CSS usa body[data-theme="..."])
+  document.body.setAttribute('data-theme', saved);
+
+  // atualizar texto dos botões e adicionar listener
+  btns.forEach(btn => {
     btn.textContent = saved === 'dark' ? '☀️' : '🌙';
-    btn.addEventListener('click', ()=>{
-      const current = document.documentElement.getAttribute('data-theme') || 'light';
+    btn.addEventListener('click', () => {
+      const current = document.body.getAttribute('data-theme') || 'light';
       const next = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
+      document.body.setAttribute('data-theme', next);
       lsSet('theme', next);
-      btns.forEach(b=>b.textContent = next === 'dark' ? '☀️' : '🌙');
+      // manter todos os botões sincronizados
+      btns.forEach(b => b.textContent = next === 'dark' ? '☀️' : '🌙');
     });
   });
 })();
+
 
 /* ---------- MODO CELULAR (simulado) ---------- */
 (function modeInit(){
