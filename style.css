@@ -8,10 +8,22 @@
   --muted:#666;
   --dark:#222;
   --admin-bg:#0f1113;
+
+  /* dark theme vars */
+  --bg-dark:#0b0b0d;
+  --card-dark:#111216;
+  --text-dark:#e6e6e6;
 }
 
+/* theme (aplicado via [data-theme]) */
+body[data-theme="light"]{ --bg:#f7f7fa; --card:#fff; --dark:#222; color:var(--dark); background:var(--bg); }
+body[data-theme="dark"]{ --bg:var(--bg-dark); --card:var(--card-dark); --dark:var(--text-dark); color:var(--text-dark); background:var(--bg-dark); }
+
+/* ensure full-width and no horizontal scroll */
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+
 /* Body */
-body{background:var(--bg);color:var(--dark);transition:all .18s ease}
+body{transition:all .18s ease}
 header{
   display:flex;
   justify-content:space-between;
@@ -28,15 +40,27 @@ header{
 #toggle-mode{padding:8px 12px;border-radius:8px;border:none;background:white;color:var(--pink);font-weight:700;cursor:pointer}
 #toggle-mode.small{padding:6px 8px;font-size:0.9rem}
 
+/* inner wrapper keeps content centered while header and carousel stay full width */
+.inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.header-center{flex:1;display:flex;align-items:center;gap:8px}
+.header-center input{flex:1}
+.header-right{display:flex;align-items:center;gap:8px}
+
 /* Destaques */
 .destaques{background:#222;color:white;padding:10px;text-align:center;font-weight:600}
+
 /* Carousel */
-.carousel{overflow:hidden;margin:18px auto;max-width:1200px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,0.08)}
+.carousel{overflow:hidden;margin:18px 0;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,0.08);width:100%}
 .carousel-container{display:flex;transition:transform .5s ease}
-.carousel-container img{width:100%;object-fit:cover;display:block}
+.carousel-item{min-width:100%;position:relative}
+.carousel-item img{width:100%;height:350px;object-fit:cover;display:block}
+.carousel-caption{position:absolute;left:16px;bottom:18px;background:rgba(0,0,0,0.4);color:#fff;padding:10px;border-radius:8px}
+.carousel-dots{display:flex;gap:8px;padding:12px;justify-content:center}
+.carousel-dot{width:10px;height:10px;border-radius:50%;background:rgba(0,0,0,0.12);cursor:pointer;border:0}
+.carousel-dot.active{background:var(--pink);}
 
 /* Layout principal */
-.container{display:flex;gap:20px;max-width:1200px;margin:20px auto;padding:0 16px}
+.container{display:flex;gap:20px;width:100%}
 .sidebar{width:260px;background:var(--card);padding:18px;border-radius:10px;box-shadow:0 6px 18px rgba(15,15,15,0.04)}
 .sidebar h3{margin-bottom:12px}
 .sidebar ul{list-style:none}
@@ -83,6 +107,7 @@ button{background:var(--pink);color:white;padding:10px 14px;cursor:pointer}
 
 /* modo celular forçado */
 body.modo-celular header{padding:12px}
+body.modo-celular .inner{flex-direction:column}
 body.modo-celular .container{flex-direction:column;padding:0 10px}
 body.modo-celular .sidebar{width:100%}
 body.modo-celular .produtos-grid{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
@@ -92,7 +117,7 @@ body.modo-celular .produtos-grid{grid-template-columns:repeat(auto-fit,minmax(14
   .container{gap:12px;padding:0 12px}
   .admin-grid{grid-template-columns:1fr}
   .sidebar{width:100%}
-  .carousel{margin:12px}
+  .carousel{margin:12px 0}
 }
 
 /* ---- CORREÇÃO DO BUG DO SELECT (mantém animações e estilo original) ---- */
@@ -106,6 +131,5 @@ select {
   color:white !important;
   border:1px solid rgba(255,255,255,0.08) !important;
 }
-/* tentativa de estilo nas options (nem todos navegadores seguem) */
 select option { background:#fff !important; color:#000 !important; }
 .admin-body select option { background:#1e1e1e !important; color:#fff !important; }
