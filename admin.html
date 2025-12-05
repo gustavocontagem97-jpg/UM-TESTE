@@ -6,24 +6,32 @@
   <title>Admin - Garimpos do Gu</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body class="admin-body">
+
   <header>
-    <h1 id="logo">Garimpos do Gu</h1>
+    <h1 id="logo">Garimpos do Gu - Painel ADM</h1>
   </header>
+
+  <!-- LOGIN -->
   <div id="login-container">
     <h2>Área Administrativa</h2>
-    <input type="text" id="username" placeholder="Usuário" />
-    <input type="password" id="password" placeholder="Senha" />
+    <input type="text" id="username" placeholder="Usuário">
+    <input type="password" id="password" placeholder="Senha">
     <button onclick="login()">Entrar</button>
     <p id="login-error"></p>
   </div>
+
+  <!-- PAINEL ADM -->
   <div id="admin-panel" class="hidden">
-    <h2>Gerenciar Produtos</h2>
+
+    <h2>Adicionar Produto</h2>
     <form id="produto-form">
-      <input type="text" id="produto-nome" placeholder="Nome do produto" required />
-      <input type="url" id="produto-link" placeholder="Link do produto" required />
-      <input type="url" id="produto-imagem" placeholder="Imagem do produto (URL)" required />
-      <input type="text" id="produto-preco" placeholder="Preço (Ex: R$ 99,90)" required />
+      <input type="text" id="produto-nome" placeholder="Nome do produto" required>
+      <input type="url" id="produto-link" placeholder="Link do produto" required>
+      <input type="url" id="produto-imagem" placeholder="Imagem (URL)" required>
+      <input type="text" id="produto-preco" placeholder="Preço" required>
+
       <select id="produto-categoria" required>
         <option value="Eletrodomésticos">Eletrodomésticos</option>
         <option value="Utensílios de cozinha">Utensílios de cozinha</option>
@@ -32,11 +40,25 @@
         <option value="Roupas & Itens de Moda">Roupas & Itens de Moda</option>
         <option value="Videogames & Jogos">Videogames & Jogos</option>
       </select>
+
       <button type="submit">Adicionar Produto</button>
     </form>
-    <h3>Lista de Produtos</h3>
+
+    <h3>Produtos Cadastrados</h3>
     <ul id="lista-produtos"></ul>
+
+    <hr>
+
+    <h2>Configurações do Login</h2>
+    <input type="text" id="novo-usuario" placeholder="Novo usuário">
+    <input type="password" id="nova-senha" placeholder="Nova senha">
+    <button onclick="atualizarLogin()">Atualizar Login</button>
+    <p id="atualizar-msg"></p>
+
+    <button onclick="logout()" class="logout-btn">Sair</button>
+
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
