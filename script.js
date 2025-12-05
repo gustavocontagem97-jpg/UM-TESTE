@@ -1,75 +1,36 @@
 /* ---------- UTILIDADES ---------- */
 const LS_PREFIX = 'garimpos_v1_';
-function lsGet(key, fallback){ try { const v = localStorage.getItem(LS_PREFIX + key); return v ? JSON.parse(v) : fallback; } catch(e){ return fallback; } }
-function lsSet(key, value){ localStorage.setItem(LS_PREFIX + key, JSON.stringify(value)); }
-
-/* ============================
-   🌙 MODO ESCURO – Preto / Roxo / Vermelho
-   ============================ */
-body[data-theme="dark"] {
-  --bg: #0a0a0a;        /* Fundo preto suave */
-  --card: #141414;      /* Cartões preto grafite */
-  --dark: #ffffff;      /* Texto branco */
-  --muted: #bbbbbb;     /* Texto apagado */
-  color: var(--dark);
-  background: var(--bg);
+function lsGet(key, fallback){
+  try { const v = localStorage.getItem(LS_PREFIX + key); return v ? JSON.parse(v) : fallback; }
+  catch(e){ return fallback; }
+}
+function lsSet(key, value){
+  localStorage.setItem(LS_PREFIX + key, JSON.stringify(value));
 }
 
-/* Header mantém o gradiente mas escurecido */
-body[data-theme="dark"] header {
-  background: linear-gradient(135deg, #4b0082, #8b0000); /* Roxo (indigo) para vermelho sangue */
-  color: white;
-}
+/* ---------- TEMA (claro / escuro) - CORRIGIDO ---------- */
+(function themeInit(){
+  // Seleciona o(s) botão(ões) de tema — pode haver #toggle-theme ou #themeToggle
+  const btns = Array.from(document.querySelectorAll('#toggle-theme, #themeToggle')).filter(Boolean);
 
-/* Sidebar escura com detalhes roxos */
-body[data-theme="dark"] .sidebar {
-  background: #0f0f0f;
-  border-right: 2px solid #4b0082; /* Roxo */
-}
+  // Ler tema salvo (fallback 'light')
+  const saved = lsGet('theme', 'light');
 
-/* Links da sidebar */
-body[data-theme="dark"] .sidebar a,
-body[data-theme="dark"] .sidebar button {
-  color: #b37bff; /* Roxo claro */
-}
+  // Aplicar no body (o CSS usa body[data-theme="..."])
+  document.body.setAttribute('data-theme', saved);
 
-body[data-theme="dark"] .sidebar a:hover {
-  color: #ff4b4b; /* Vermelho neon */
-}
-
-/* Cards de produtos */
-body[data-theme="dark"] .produto {
-  background: #141414;
-  border: 1px solid #4b0082; /* Roxo */
-  color: white;
-  box-shadow: 0px 4px 15px rgba(128, 0, 128, 0.3);
-}
-
-body[data-theme="dark"] .produto:hover {
-  transform: translateY(-4px);
-  box-shadow: 0px 0px 15px #ff0000aa; /* Vermelho neon */
-}
-
-/* Botões */
-body[data-theme="dark"] button,
-body[data-theme="dark"] .btn {
-  background: #8b0000;     /* Vermelho escuro */
-  color: white;
-}
-
-body[data-theme="dark"] button:hover,
-body[data-theme="dark"] .btn:hover {
-  background: #ff0000;     /* Vermelho neon */
-}
-
-/* Footer */
-body[data-theme="dark"] footer {
-  background: #000;
-  color: white;
-  border-top: 2px solid #4b0082;
-}
-
-
+  // Atualizar texto dos botões e adicionar listener
+  btns.forEach(btn => {
+    btn.textContent = saved === 'dark' ? '☀️' : '🌙';
+    btn.addEventListener('click', () => {
+      const current = document.body.getAttribute('data-theme') || 'light';
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.body.setAttribute('data-theme', next);
+      lsSet('theme', next);
+      btns.forEach(b => b.textContent = next === 'dark' ? '☀️' : '🌙');
+    });
+  });
+})();
 
 /* ---------- MODO CELULAR (simulado) ---------- */
 (function modeInit(){
@@ -133,7 +94,7 @@ function goToSlide(i){ carouselIndex = i; updateCarousel(); }
 function nextSlide(){ carouselIndex++; updateCarousel(); }
 function resetAutoPlay(){ clearInterval(carouselTimer); carouselTimer = setInterval(nextSlide, 4000); }
 
-/* ---------- PROMOÇÕES - ADMIN ---------- */
+/* ---------- PROMOÇÕES - ADMIN (CRUD) ---------- */
 function carregarPromocoesAdmin(){
   const lista = document.getElementById('lista-promocoes');
   if(!lista) return;
@@ -188,7 +149,6 @@ function login(){
     document.getElementById('login-container')?.classList.add('hidden');
     document.getElementById('admin-panel')?.classList.remove('hidden');
     carregarAdmins(); carregarPromocoesAdmin();
-    // carregar produtos se houver
     renderProdutos();
   } else {
     const err = document.getElementById('login-error');
