@@ -3,72 +3,112 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Garimpos do Gu</title>
+  <title>Admin - Garimpos do Gu</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body class="admin-body">
+
   <header class="main-header">
     <div class="header-left">
-      <button id="open-admin" class="gear" title="Área Administrativa">⚙</button>
-      <h1 id="logo">Garimpos do Gu</h1>
+      <h1 id="logo-admin">Garimpos do Gu - Painel ADM</h1>
     </div>
-
-    <div class="header-center inner">
-      <input id="search" type="search" placeholder="Buscar produtos... (ex: fone, carregador)" />
-      <select id="sort" aria-label="Ordenar">
-        <option value="relevancia">Ordenar: relevância</option>
-        <option value="preco-asc">Preço: menor → maior</option>
-        <option value="preco-desc">Preço: maior → menor</option>
-        <option value="novo">Mais novos</option>
-      </select>
-      <button id="favorites-filter" title="Mostrar favoritos">☆ Favoritos</button>
-    </div>
-
-    <div class="header-right inner">
-      <button id="toggle-theme" title="Alternar tema">🌙</button>
-      <button id="toggle-mode" title="Alternar modo visual">📱 Modo Celular</button>
+    <div class="header-right">
+      <button id="back-home" class="small-ghost">Voltar</button>
     </div>
   </header>
 
-  <div class="destaques"><span id="destaque-texto">Itens em Promoção</span></div>
-
-  <section class="carousel" aria-label="Carrossel de promoções">
-    <div class="carousel-container" id="carousel-container">
-      <!-- Itens inseridos via JS -->
+  <!-- LOGIN -->
+  <section id="login-container" class="card center-card">
+    <h2>Área Administrativa</h2>
+    <input type="text" id="username" placeholder="Usuário" autocomplete="username" />
+    <input type="password" id="password" placeholder="Senha" autocomplete="current-password" />
+    <div class="row">
+      <button id="btn-login">Entrar</button>
+      <button id="btn-visit" class="small-ghost" onclick="window.location.href='index.html'">Ir ao site</button>
     </div>
-    <div class="carousel-dots" id="carousel-dots" role="tablist" aria-label="Navegação do carrossel"></div>
+    <p id="login-error" class="msg-error"></p>
+    <small class="hint">Usuário padrão: <strong>admin</strong> / Senha: <strong>1234</strong></small>
   </section>
 
-  <div class="container">
-    <div class="inner">
-      <aside class="sidebar" aria-label="Categorias">
-        <h3>Categorias</h3>
-        <ul id="categoria-list">
-          <li data-cat="Todos" class="active">Todos</li>
-          <li data-cat="Eletrodomésticos">Eletrodomésticos</li>
-          <li data-cat="Utensílios de cozinha">Utensílios de cozinha</li>
-          <li data-cat="Peças de carro">Peças de carro</li>
-          <li data-cat="Celulares & Acessórios">Celulares & Acessórios</li>
-          <li data-cat="Roupas & Itens de Moda">Roupas & Itens de Moda</li>
-          <li data-cat="Videogames & Jogos">Videogames & Jogos</li>
-        </ul>
-      </aside>
+  <!-- PAINEL -->
+  <main id="admin-panel" class="hidden">
+    <section class="card admin-grid">
+      <div>
+        <h2>Gerenciar Produtos</h2>
+        <form id="produto-form">
+          <input id="produto-nome" type="text" placeholder="Nome do produto" required />
+          <input id="produto-link" type="url" placeholder="Link do produto (https://...)" required />
+          <input id="produto-imagem" type="url" placeholder="Imagem do produto (URL)" required />
+          <input id="produto-preco" type="text" placeholder="Preço (Ex: R$ 99,90)" required />
+          <select id="produto-categoria" required>
+            <option>Eletrodomésticos</option>
+            <option>Utensílios de cozinha</option>
+            <option>Peças de carro</option>
+            <option>Celulares & Acessórios</option>
+            <option>Roupas & Itens de Moda</option>
+            <option>Videogames & Jogos</option>
+          </select>
+          <div class="row">
+            <button type="submit">Adicionar / Salvar</button>
+            <button type="button" class="small-ghost" onclick="limparFormProduto()">Limpar</button>
+          </div>
+        </form>
 
-      <main class="products">
-        <h2>Produtos em Destaque</h2>
-        <div id="produtos" class="produtos-grid" aria-live="polite"></div>
-        <div class="pagination" id="pagination"></div>
-      </main>
-    </div>
-  </div>
+        <h3>Produtos Cadastrados</h3>
+        <ul id="lista-produtos" class="admin-list"></ul>
+      </div>
 
-  <footer>
-    <p>&copy; 2025 Garimpos do Gu - Todos os direitos reservados.</p>
-  </footer>
+      <div>
+        <h2>Administradores</h2>
+        <form id="admin-form">
+          <input id="adm-nome" type="text" placeholder="Novo usuário (ex: joao)" required />
+          <input id="adm-senha" type="password" placeholder="Senha (mínimo 3 chars)" required />
+          <div class="row">
+            <button type="submit">Criar Admin</button>
+            <button type="button" class="small-ghost" onclick="carregarAdmins()">Atualizar</button>
+          </div>
+        </form>
+
+        <h3>Lista de Admins</h3>
+        <ul id="lista-admins" class="admin-list"></ul>
+
+        <hr/>
+        <h3>Trocar usuário/senha rápido</h3>
+        <input id="novo-usuario" placeholder="Novo usuário" />
+        <input id="nova-senha" type="password" placeholder="Nova senha" />
+        <div class="row">
+          <button id="atualizar-login">Atualizar Login</button>
+          <button onclick="logout()" class="small-ghost">Sair</button>
+        </div>
+        <p id="atualizar-msg" class="msg-success"></p>
+      </div>
+    </section>
+
+    <!-- Promoções -->
+    <section class="card" style="max-width:1200px;margin:20px auto;">
+      <h2>Gerenciar Promoções (Carrossel)</h2>
+      <form id="promocao-form">
+        <input id="promo-titulo" placeholder="Título da promoção (ex: Super oferta)" required />
+        <input id="promo-imagem" type="url" placeholder="Imagem (URL) - 1200x350 recomendado" required />
+        <input id="promo-link" type="url" placeholder="Link (https://...)" />
+        <div class="row">
+          <button type="submit">Adicionar Promoção</button>
+          <button type="button" class="small-ghost" id="limpar-promo">Limpar</button>
+        </div>
+      </form>
+
+      <h3>Promoções Cadastradas</h3>
+      <ul id="lista-promocoes" class="admin-list"></ul>
+    </section>
+  </main>
 
   <script src="script.js"></script>
   <script>
-    document.getElementById('open-admin')?.addEventListener('click', () => window.location.href = 'admin.html');
+    document.getElementById('back-home')?.addEventListener('click', () => location.href = 'index.html');
+    document.getElementById('btn-login')?.addEventListener('click', () => login());
+    document.getElementById('atualizar-login')?.addEventListener('click', atualizarLogin);
+    document.getElementById('promocao-form')?.addEventListener('submit', (e)=>{ e.preventDefault(); adicionarPromocao(); });
+    document.getElementById('limpar-promo')?.addEventListener('click', ()=>{ document.getElementById('promo-titulo').value=''; document.getElementById('promo-imagem').value=''; document.getElementById('promo-link').value=''; });
   </script>
 </body>
 </html>
