@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Garimpos do Gu</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1 id="logo">Garimpos do Gu</h1>
+    <div class="gear" onclick="window.location.href='admin.html'">⚙</div>
+    <button id="toggle-mode">Modo Celular</button>
+  </header>
+
+  <!-- Destaques animados -->
+  <div class="destaques">
+    <span id="destaque-texto">Itens em Promoção</span>
+  </div>
+
+  <!-- Carrossel -->
+  <section class="carousel">
+    <div class="carousel-container">
+      <img src="https://via.placeholder.com/1200x300?text=Promoção+1" alt="Promoção 1" />
+      <img src="https://via.placeholder.com/1200x300?text=Promoção+2" alt="Promoção 2" />
+      <img src="https://via.placeholder.com/1200x300?text=Promoção+3" alt="Promoção 3" />
+    </div>
+  </section>
+
+  <div class="container">
+    <aside class="sidebar">
+      <h3>Categorias</h3>
+      <ul>
+        <li onclick="filtrarCategoria('Todos')">Todos</li>
+        <li onclick="filtrarCategoria('Eletrodomésticos')">Eletrodomésticos</li>
+        <li onclick="filtrarCategoria('Utensílios de cozinha')">Utensílios de cozinha</li>
+        <li onclick="filtrarCategoria('Peças de carro')">Peças de carro</li>
+        <li onclick="filtrarCategoria('Celulares & Acessórios')">Celulares & Acessórios</li>
+        <li onclick="filtrarCategoria('Roupas & Itens de Moda')">Roupas & Itens de Moda</li>
+        <li onclick="filtrarCategoria('Videogames & Jogos')">Videogames & Jogos</li>
+      </ul>
+    </aside>
+
+    <main class="products">
+      <h2>Produtos em Destaque</h2>
+      <div id="produtos" class="produtos-grid"></div>
+    </main>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Garimpos do Gu - Todos os direitos reservados.</p>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>
